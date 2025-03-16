@@ -8,16 +8,11 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  /*
-    GET /users
-    GET /users/:id
-    POST /users
-    PATCH /users/:id
-    DELETE /users/:id
-    */
+  constructor(private readonly userService: UsersService) {}
 
   // 1 - GET /users
   //   @Get()
@@ -27,30 +22,36 @@ export class UsersController {
   // 1 - GET /users or /users?role=value
   @Get()
   findAll(@Query('role') role?: 'ADMIN' | 'INTERN') {
-    return [];
+    return this.userService.findAll(role);
   }
 
   //   2- GET /users/:id
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return { id };
+    return this.userService.findOne(+id);
   }
 
   // 3 - POST /users
   @Post()
-  create(@Body() user: {}) {
-    return user;
+  create(
+    @Body() user: { name: string; email: string; role: 'ADMIN' | 'INTERN' },
+  ) {
+    return this.userService.create(user);
   }
 
   //  4 - PATCH /users/:id
   @Patch(':id')
-  updateOne(@Param('id') id: string, @Body() updatedUser: {}) {
-    return { id, ...updatedUser };
+  updateOne(
+    @Param('id') id: string,
+    @Body()
+    updatedUser: { name?: string; email?: string; role?: 'ADMIN' | 'INTERN' },
+  ) {
+    return this.userService.updateOne(+id, updatedUser);
   }
 
   //  5 - DELETE /users/:id
   @Delete(':id')
   deleteOne(@Param('id') id: string) {
-    return { id };
+    return this.userService.deleteOne(+id);
   }
 }
