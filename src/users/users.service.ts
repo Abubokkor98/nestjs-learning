@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -38,7 +40,10 @@ export class UsersService {
   //   for get all users
   findAll(role?: 'ADMIN' | 'INTERN') {
     if (role) {
-      return this.users.filter((user) => user.role === role);
+      const rolesArray = this.users.filter((user) => user.role === role);
+      if (rolesArray.length === 0)
+        throw new NotFoundException('User Role Not Found');
+      return rolesArray;
     }
     return this.users;
   }
@@ -46,14 +51,15 @@ export class UsersService {
   //   for get a single user
   findOne(id: number) {
     const user = this.users.find((user) => user.id === id);
+    if (!user) throw new NotFoundException('User Not Found');
     return user;
   }
   // for create a user
-  create(user: { name: string; email: string; role: 'ADMIN' | 'INTERN' }) {
+  create(createUserDto: CreateUserDto) {
     const usersByNewestId = [...this.users].sort((a, b) => b.id - a.id);
     const newUser = {
       id: usersByNewestId[0].id + 1,
-      ...user,
+      ...createUserDto,
     };
     this.users.push(newUser);
     return newUser;
@@ -61,13 +67,10 @@ export class UsersService {
 
   //   for update a user
   // user may update any field, that's why optional chaining
-  updateOne(
-    id: number,
-    updatedUser: { name?: string; email?: string; role?: 'ADMIN' | 'INTERN' },
-  ) {
+  updateOne(id: number, updateUserDto: UpdateUserDto) {
     this.users = this.users.map((user) => {
       if (user.id === id) {
-        return { ...user, ...updatedUser };
+        return { ...user, ...updateUserDto };
       }
       return user;
     });
