@@ -29,4 +29,5 @@ enum Role {
   INTERN
   ADMIN
   ENGINEER
+  DEVELOPER
 }
