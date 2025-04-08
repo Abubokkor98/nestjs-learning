@@ -11,7 +11,7 @@ export class EmployeesService {
       data: createEmployeeDto,
     });
   }
-
+ /// This method is used to find all employees. If a role is provided, it will filter the employees by that role.
   async findAll(role?: 'INTERN' | 'ADMIN' | 'ENGINEER') {
     if (role)
       return this.databaseService.employee.findMany({
