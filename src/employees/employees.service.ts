@@ -21,7 +21,7 @@ export class EmployeesService {
       });
     return this.databaseService.employee.findMany();
   }
-
+// findOne method is used to find a single employee by their ID.
   async findOne(id: number) {
     return this.databaseService.employee.findUnique({
       where: {
