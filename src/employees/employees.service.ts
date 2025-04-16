@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
+//injectable decorator is used to mark a class as a provider that can be injected into other classes.
+// This is useful for dependency injection, which is a design pattern used to create loosely coupled classes.
 @Injectable()
 export class EmployeesService {
   constructor(private readonly databaseService: DatabaseService) {}
